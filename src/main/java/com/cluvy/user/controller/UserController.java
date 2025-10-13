@@ -2,17 +2,10 @@ package com.cluvy.user.controller;
 
 import com.cluvy.user.client.AuthFeignClient;
 import com.cluvy.user.dto.*;
-import com.cluvy.user.entity.User;
-import com.cluvy.user.entity.enums.AuthType;
-import com.cluvy.user.entity.enums.Status;
-import com.cluvy.user.repository.UserRepository;
 import com.cluvy.user.response.ApiResponse;
 import com.cluvy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,6 +14,11 @@ public class UserController {
 
     private final UserService userService;
     private final AuthFeignClient authFeignClient;
+
+    @GetMapping("/health")
+    public ApiResponse<?> health() {
+        return ApiResponse.onSuccess("살아있음");
+    }
 
     @PostMapping("/signup")
     public ApiResponse<SignupResponse> signup(@RequestBody SignupRequest request) {
@@ -77,5 +75,17 @@ public class UserController {
     public ApiResponse<Void> reactivateUser(@PathVariable Long id) {
         userService.reactivateUser(id);
         return ApiResponse.onSuccess(null);
+    }
+
+    @GetMapping("/me")
+    public UserInfoResponse getUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        Long userId = authFeignClient.getUserIdFromToken(authorizationHeader);
+        return userService.getUserInfo(userId);
+    }
+
+    @GetMapping("/me/kakao")
+    public UserInfoResponse getSocialUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        String socialId = authFeignClient.getSocialIdFromToken(authorizationHeader);
+        return userService.getSocialUserInfo(socialId);
     }
 }

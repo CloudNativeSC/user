@@ -17,4 +17,8 @@ public interface UserService {
     void updateLastLoginAtBySocialId(String socialId);
 
     void reactivateUser(Long userId);
+
+    // 사용자 정보 가져오기
+    UserInfoResponse getUserInfo(Long userId);
+    UserInfoResponse getSocialUserInfo(String socialId);
 }

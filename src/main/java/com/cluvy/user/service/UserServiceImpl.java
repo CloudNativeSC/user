@@ -4,6 +4,7 @@ import com.cluvy.user.client.KakaoFeignClient;
 import com.cluvy.user.dto.*;
 import com.cluvy.user.entity.User;
 import com.cluvy.user.entity.enums.*;
+import com.cluvy.user.mapper.UserInfoMapper;
 import com.cluvy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final KakaoFeignClient kakaoFeignClient;
+    private final UserInfoMapper userInfoMapper;
 
     @Value("${kakao.admin-key}")
     private String kakaoAdminKey;
@@ -171,6 +173,22 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserInfoResponse getUserInfo(Long userId) {
+        User user = userRepository.findByIdAndStatus(userId, Status.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("User not found or already inactive"));
 
+        return userInfoMapper.toUserInfoResponse(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserInfoResponse getSocialUserInfo(String socialId) {
+        User user = userRepository.findBySocialIdAndStatus(socialId, Status.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("User not found or already inactive"));
+
+        return userInfoMapper.toUserInfoResponse(user);
+    }
 
 }
