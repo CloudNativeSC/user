@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found or inactive"));
 
         userInfoMapper.update(request, user);
-        userRepository.save(user);
+
         return userInfoMapper.toUserInfoResponse(user);
     }
 
@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found or inactive"));
 
         userInfoMapper.update(request, user);
-        userRepository.save(user);
+
         return userInfoMapper.toUserInfoResponse(user);
     }
 
