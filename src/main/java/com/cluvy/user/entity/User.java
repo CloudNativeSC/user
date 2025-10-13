@@ -60,5 +60,8 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
+    @Column(length = 255, nullable = false)
+    private String bio = "아직 자기소개를 입력하지 않았어요.";
+
     //private String providerUserId;
 }
