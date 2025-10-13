@@ -88,4 +88,16 @@ public class UserController {
         String socialId = authFeignClient.getSocialIdFromToken(authorizationHeader);
         return userService.getSocialUserInfo(socialId);
     }
+
+    @PatchMapping("/me")
+    public UserInfoResponse patchUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserUpdateRequest request) {
+        Long userId = authFeignClient.getUserIdFromToken(authorizationHeader);
+        return userService.updateUserInfo(userId, request);
+    }
+
+    @PatchMapping("/me/kakao")
+    public UserInfoResponse patchSocialUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserUpdateRequest request) {
+        String socialId = authFeignClient.getSocialIdFromToken(authorizationHeader);
+        return userService.updateSocialUserInfo(socialId, request);
+    }
 }

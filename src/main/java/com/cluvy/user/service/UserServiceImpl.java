@@ -191,4 +191,36 @@ public class UserServiceImpl implements UserService {
         return userInfoMapper.toUserInfoResponse(user);
     }
 
+    /**
+     * @param userId
+     * @param request
+     * @return
+     */
+    @Override
+    @Transactional
+    public UserInfoResponse updateUserInfo(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findByIdAndStatus(userId, Status.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("User not found or inactive"));
+
+        userInfoMapper.update(request, user);
+        userRepository.save(user);
+        return userInfoMapper.toUserInfoResponse(user);
+    }
+
+    /**
+     * @param socialId
+     * @param request
+     * @return
+     */
+    @Override
+    @Transactional
+    public UserInfoResponse updateSocialUserInfo(String socialId, UserUpdateRequest request) {
+        User user = userRepository.findBySocialIdAndStatus(socialId, Status.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("User not found or inactive"));
+
+        userInfoMapper.update(request, user);
+        userRepository.save(user);
+        return userInfoMapper.toUserInfoResponse(user);
+    }
+
 }

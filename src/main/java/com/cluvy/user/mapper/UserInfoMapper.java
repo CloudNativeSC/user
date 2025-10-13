@@ -1,12 +1,13 @@
 package com.cluvy.user.mapper;
 
 import com.cluvy.user.dto.UserInfoResponse;
+import com.cluvy.user.dto.UserUpdateRequest;
 import com.cluvy.user.entity.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserInfoMapper {
 
     UserInfoMapper INSTANCE = Mappers.getMapper(UserInfoMapper.class);
@@ -19,4 +20,7 @@ public interface UserInfoMapper {
     @Mapping(target = "timezone", expression = "java(user.getTimezone() != null ? user.getTimezone().name() : null)")
     @Mapping(target = "subscriptionType", expression = "java(user.getSubscriptionType() != null ? user.getSubscriptionType().name() : null)")
     UserInfoResponse toUserInfoResponse(User user);
+
+    @InheritConfiguration
+    void update(UserUpdateRequest dto, @MappingTarget User entity);
 }
